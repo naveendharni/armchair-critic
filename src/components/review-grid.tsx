@@ -11,6 +11,8 @@ export type Card = {
   title: string;
   year?: number;
   rating: number;
+  /** Rewatch verdict, already in words. */
+  verdict: string;
   poster?: { url: string; color?: string };
 };
 
@@ -100,17 +102,15 @@ function PosterCard({ card, eager }: { card: Card; eager: boolean }) {
             className="absolute left-2 top-2 rounded-lg bg-accent px-2 py-1.5 text-base font-bold leading-none tabular-nums text-on-accent shadow-lg shadow-black/40"
           >
             {rating}
-            <span className="text-[0.7em] font-semibold opacity-75">/10</span>
+            <span className="text-[0.7em] font-semibold opacity-75">/5</span>
           </span>
         </div>
         <h3 className="mt-3 line-clamp-2 font-medium leading-snug transition-colors group-hover:text-accent">
           {card.title}
         </h3>
         <p className="mt-1 text-sm text-muted">
-          {card.year}
-          <span className="sr-only">
-            {card.year ? ", " : ""}my rating {rating} out of 10
-          </span>
+          {[card.year, card.verdict].filter(Boolean).join(" · ")}
+          <span className="sr-only">, my rating {rating} out of 5</span>
         </p>
       </Link>
     </li>

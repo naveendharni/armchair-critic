@@ -12,8 +12,6 @@ fragment Fields on Media {
   title { english romaji }
   startDate { year }
   genres
-  averageScore
-  meanScore
   format
   episodes
   status
@@ -27,8 +25,6 @@ type AniListMedia = {
   title: { english: string | null; romaji: string | null };
   startDate: { year: number | null };
   genres: string[];
-  averageScore: number | null;
-  meanScore: number | null;
   format: string | null;
   episodes: number | null;
   status: string | null;
@@ -81,7 +77,6 @@ async function post(body: string, attempt = 1): Promise<AniListResponse> {
 function toMedia(m: AniListMedia): Media {
   const title = plain(m.title.english ?? m.title.romaji ?? `AniList ${m.id}`);
   const romaji = m.title.romaji ? plain(m.title.romaji) : undefined;
-  const score = m.averageScore ?? m.meanScore;
   const isMovie = m.format === "MOVIE";
 
   let episodes: string | undefined;
@@ -101,7 +96,6 @@ function toMedia(m: AniListMedia): Media {
     poster: m.coverImage.extraLarge
       ? { url: m.coverImage.extraLarge, color: m.coverImage.color ?? undefined }
       : undefined,
-    score: score == null ? undefined : score / 10,
     url: m.siteUrl,
   };
 }

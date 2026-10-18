@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowUpRight, Check, Cross } from "@/components/icons";
 import { entries } from "@/data/entries";
 import { getReview } from "@/lib/reviews";
 import { formatScore } from "@/lib/text";
-import { typeLabels, type Review } from "@/lib/types";
+import { typeLabels, verdictLabels } from "@/lib/types";
 
 // Every page comes from the list, so any other URL is a 404.
 export const dynamicParams = false;
@@ -20,25 +20,16 @@ export async function generateMetadata({ params }: PageProps<"/[type]/[id]">): P
   const review = await getReview(type, id);
   if (!review) return {};
 
-  const description = review.note ?? `Rated ${formatScore(review.rating)} out of 10, with what worked and what didn't.`;
+  const description = review.note ?? `Rated ${formatScore(review.rating)} out of 5, with what worked and what didn't.`;
   return {
     title: review.media.title,
     description,
     openGraph: {
-      title: `${review.media.title}: ${formatScore(review.rating)}/10`,
+      title: `${review.media.title}: ${formatScore(review.rating)}/5`,
       description,
       images: review.media.poster ? [review.media.poster.url] : undefined,
     },
   };
-}
-
-/** One plain sentence comparing my rating with the source average. */
-function comparison({ rating, media, source }: Review): string {
-  if (media.score === undefined) return `${source} has no average score for this yet.`;
-  const diff = Math.round((rating - media.score) * 10) / 10;
-  if (diff === 0) return `Same as the ${source} average.`;
-  const points = Math.abs(diff) === 1 ? "point" : "points";
-  return `${formatScore(Math.abs(diff))} ${points} ${diff > 0 ? "above" : "below"} the ${source} average.`;
 }
 
 export default async function EntryPage({ params }: PageProps<"/[type]/[id]">) {
@@ -114,20 +105,10 @@ export default async function EntryPage({ params }: PageProps<"/[type]/[id]">) {
               </dd>
             </div>
             <div className="rounded-2xl bg-surface p-4 ring-1 ring-line">
-              <dt className="text-sm text-muted">{review.source} average</dt>
-              <dd className="mt-1 font-serif text-5xl leading-none">
-                {media.score === undefined ? (
-                  <span className="text-3xl text-muted">None yet</span>
-                ) : (
-                  <>
-                    {formatScore(media.score)}
-                    <Out />
-                  </>
-                )}
-              </dd>
+              <dt className="text-sm text-muted">Rewatch verdict</dt>
+              <dd className="mt-2 font-serif text-3xl leading-tight">{verdictLabels[review.verdict]}</dd>
             </div>
           </dl>
-          <p className="mt-3 text-sm text-muted">{comparison(review)}</p>
 
           {review.note && (
             <blockquote className="mt-8 max-w-2xl border-l-2 border-accent pl-4 font-serif text-2xl italic leading-snug">
@@ -153,14 +134,14 @@ export default async function EntryPage({ params }: PageProps<"/[type]/[id]">) {
   );
 }
 
-/** "/10" for the eye, "out of 10" for screen readers. */
+/** "/5" for the eye, "out of 5" for screen readers. */
 function Out() {
   return (
     <>
       <span aria-hidden="true" className="ml-0.5 font-sans text-lg text-muted">
-        /10
+        /5
       </span>
-      <span className="sr-only"> out of 10</span>
+      <span className="sr-only"> out of 5</span>
     </>
   );
 }

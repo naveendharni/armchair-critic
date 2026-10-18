@@ -6,7 +6,7 @@ export function plain(text: string): string {
   return text.replace(/[\u2012-\u2015]/g, "-");
 }
 
-/** 9 stays "9", 7.5 stays "7.5", 8.46 becomes "8.5". */
+/** 4 stays "4", 3.5 stays "3.5". */
 export function formatScore(score: number): string {
   return String(Math.round(score * 10) / 10);
 }

@@ -1,6 +1,6 @@
 import { ReviewGrid, type Card } from "@/components/review-grid";
 import { getReviews } from "@/lib/reviews";
-import { typeLabels, type MediaType, type Review } from "@/lib/types";
+import { typeLabels, verdictLabels, type MediaType, type Review } from "@/lib/types";
 
 /** "5 anime rated", later "5 anime, 2 movies rated". */
 function summarize(reviews: Review[]): string {
@@ -17,6 +17,7 @@ export default async function Home() {
     title: review.media.title,
     year: review.media.year,
     rating: review.rating,
+    verdict: verdictLabels[review.verdict],
     poster: review.media.poster,
   }));
 
@@ -25,7 +26,7 @@ export default async function Home() {
       <div className="pb-8 pt-6 sm:pb-10 sm:pt-12">
         <h1 className="font-serif text-[2.75rem] leading-[1.05] sm:text-6xl">What I watch, rated</h1>
         <p className="mt-3 max-w-xl text-muted sm:text-lg">
-          My ratings out of 10, with what worked and what didn&apos;t.
+          My ratings out of 5, with what worked and what didn&apos;t.
         </p>
       </div>
       <ReviewGrid cards={cards} summary={summarize(reviews)} />

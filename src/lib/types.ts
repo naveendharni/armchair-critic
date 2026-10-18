@@ -1,5 +1,15 @@
 export type MediaType = "anime" | "movie" | "show" | "webseries" | "singer";
 
+/** Would I watch it again? Ordered from no to always. */
+export type Verdict = "skip" | "once" | "rewatch" | "forever";
+
+export const verdictLabels: Record<Verdict, string> = {
+  skip: "Skip it",
+  once: "Once is enough",
+  rewatch: "Would rewatch",
+  forever: "Rewatch forever",
+};
+
 /** Two or three short points. */
 export type Points = [string, string] | [string, string, string];
 
@@ -8,8 +18,10 @@ export type Entry = {
   type: MediaType;
   /** ID on the source for this type (AniList for anime). `npm run find` looks it up. */
   id: number;
-  /** My rating out of 10. One decimal at most, like 7.5. */
+  /** My rating out of 5, in halves, like 3.5. */
   rating: number;
+  /** Would I watch it again? */
+  verdict: Verdict;
   /** What worked. */
   strong: Points;
   /** What didn't. */
@@ -30,15 +42,13 @@ export type Media = {
   /** Short facts for the details line, like "TV", "25 episodes" or the studio. */
   facts: string[];
   poster?: { url: string; color?: string };
-  /** Average score from the source, out of 10. */
-  score?: number;
   /** This title's page on the source site. */
   url: string;
 };
 
 /** Where one type gets its posters and details. Each type plugs in its own. */
 export type Source = {
-  /** Shown with the average score, as in "AniList average". */
+  /** Shown in the "See it on AniList" link. */
   name: string;
   /** Looks up every ID, in as few requests as the API allows. IDs it can't find are left out. */
   fetchMedia(ids: number[]): Promise<Map<number, Media>>;

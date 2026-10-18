@@ -19,8 +19,8 @@ function validate(list: Entry[]): void {
 
     if (!sources[entry.type]) problems.push(`${where}: there is no source for ${entry.type} yet.`);
     if (!Number.isInteger(entry.id) || entry.id <= 0) problems.push(`${where}: the ID must be a whole number.`);
-    if (!(entry.rating >= 0 && entry.rating <= 10) || Math.round(entry.rating * 10) !== entry.rating * 10) {
-      problems.push(`${where}: the rating must be from 0 to 10, with one decimal at most.`);
+    if (!(entry.rating >= 0.5 && entry.rating <= 5) || !Number.isInteger(entry.rating * 2)) {
+      problems.push(`${where}: the rating must be from 0.5 to 5, in halves.`);
     }
 
     const points = [...entry.strong, ...entry.weak];

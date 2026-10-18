@@ -18,7 +18,7 @@ const serif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: { default: "Armchair Critic", template: "%s | Armchair Critic" },
-  description: "Anime I've watched, rated out of 10, with what worked and what didn't.",
+  description: "Anime I've watched, rated out of 5, with what worked and what didn't.",
 };
 
 export const viewport: Viewport = {
