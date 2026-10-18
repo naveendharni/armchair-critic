@@ -23,6 +23,8 @@ function validate(list: Entry[]): void {
       problems.push(`${where}: the rating must be from 0.5 to 5, in halves.`);
     }
 
+    if (entry.title !== undefined && !entry.title.trim()) problems.push(`${where}: the title is empty.`);
+
     const points = [...entry.strong, ...entry.weak];
     if (points.some((point) => !point.trim())) {
       problems.push(`${where}: a strong or weak point is empty.`);
@@ -30,7 +32,7 @@ function validate(list: Entry[]): void {
     if (entry.note !== undefined && (!entry.note.trim() || entry.note.includes("\n"))) {
       problems.push(`${where}: the note must be one line.`);
     }
-    if ([...points, entry.note ?? ""].some((text) => LONG_DASH.test(text))) {
+    if ([...points, entry.note ?? "", entry.title ?? ""].some((text) => LONG_DASH.test(text))) {
       problems.push(`${where}: has an em or en dash. Use a comma, a period or plain words.`);
     }
   });
@@ -56,11 +58,12 @@ async function load(): Promise<Review[]> {
 
   const missing: string[] = [];
   const reviews = entries.flatMap((entry) => {
-    const media = found.get(entry.type)?.get(entry.id);
+    let media = found.get(entry.type)?.get(entry.id);
     if (!media) {
       missing.push(`${entry.type} ${entry.id}`);
       return [];
     }
+    if (entry.title) media = { ...media, title: entry.title };
     return [{ ...entry, media, source: sources[entry.type]!.name, slug: `${entry.type}/${entry.id}` }];
   });
 
@@ -84,6 +87,18 @@ export function getReviews(): Promise<Review[]> {
     throw error;
   });
   return cached;
+}
+
+/** The home page's default order: highest rating first, then by title. */
+export function byRating(a: Review, b: Review): number {
+  return b.rating - a.rating || a.media.title.localeCompare(b.media.title);
+}
+
+/** The entry and its neighbours in byRating order, for previous and next links. */
+export async function getNeighbours(review: Review): Promise<{ prev?: Review; next?: Review }> {
+  const ordered = [...(await getReviews())].sort(byRating);
+  const i = ordered.findIndex((r) => r.slug === review.slug);
+  return { prev: ordered[i - 1], next: ordered[i + 1] };
 }
 
 export async function getReview(type: string, id: string): Promise<Review | undefined> {

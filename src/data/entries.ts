@@ -1,17 +1,10 @@
 import type { Entry } from "@/lib/types";
 
-// My list. One object per title, in any order. Field notes are in src/lib/types.ts.
-// Find an ID with: npm run find -- "title"
-//
-// DRAFTS (2026-10-16): Naveen asked for these six to be filled in from the internet
-// for now, to be replaced with Naveen's own ratings and points later.
-// Rating (out of 5) and verdict follow the MyAnimeList ranking of the six. Points are
-// common praise and criticism from reviews, kept free of spoilers. No year, since the
-// watch year is unknown.
 export const entries: Entry[] = [
   {
     type: "anime",
-    id: 21, // One Piece
+    id: 21,
+    title: "One Piece",
     rating: 4.5,
     verdict: "once",
     strong: [
@@ -28,7 +21,8 @@ export const entries: Entry[] = [
   },
   {
     type: "anime",
-    id: 113415, // Jujutsu Kaisen, season 1
+    id: 113415, // Season 1
+    title: "Jujutsu Kaisen",
     rating: 4,
     verdict: "rewatch",
     strong: [

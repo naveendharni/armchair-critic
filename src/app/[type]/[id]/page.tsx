@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Check, Cross } from "@/components/icons";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Cross } from "@/components/icons";
 import { entries } from "@/data/entries";
-import { getReview } from "@/lib/reviews";
+import { getNeighbours, getReview } from "@/lib/reviews";
 import { formatScore } from "@/lib/text";
 import { typeLabels, verdictLabels } from "@/lib/types";
 
@@ -38,6 +38,7 @@ export default async function EntryPage({ params }: PageProps<"/[type]/[id]">) {
   if (!review) notFound();
 
   const { media } = review;
+  const { prev, next } = await getNeighbours(review);
   const details = [media.year, ...media.facts].filter(Boolean).join(" · ");
 
   return (
@@ -130,6 +131,32 @@ export default async function EntryPage({ params }: PageProps<"/[type]/[id]">) {
           </p>
         </div>
       </div>
+
+      {(prev || next) && (
+        <nav aria-label="More ratings" className="mt-14 grid grid-cols-2 gap-3 border-t border-line pt-6">
+          {prev && (
+            <Link href={`/${prev.slug}`} className="group rounded-xl p-3 ring-1 ring-line transition-colors hover:bg-surface">
+              <span className="flex items-center gap-1.5 text-sm text-muted">
+                <ArrowLeft className="size-4" />
+                Previous
+              </span>
+              <span className="mt-1 block font-medium leading-snug group-hover:text-accent">{prev.media.title}</span>
+            </Link>
+          )}
+          {next && (
+            <Link
+              href={`/${next.slug}`}
+              className="group col-start-2 rounded-xl p-3 text-right ring-1 ring-line transition-colors hover:bg-surface"
+            >
+              <span className="flex items-center justify-end gap-1.5 text-sm text-muted">
+                Next
+                <ArrowRight className="size-4" />
+              </span>
+              <span className="mt-1 block font-medium leading-snug group-hover:text-accent">{next.media.title}</span>
+            </Link>
+          )}
+        </nav>
+      )}
     </article>
   );
 }

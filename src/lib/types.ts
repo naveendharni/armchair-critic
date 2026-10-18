@@ -18,6 +18,8 @@ export type Entry = {
   type: MediaType;
   /** ID on the source for this type (AniList for anime). `npm run find` looks it up. */
   id: number;
+  /** Optional display name, when the source's title reads badly (like "ONE PIECE"). */
+  title?: string;
   /** My rating out of 5, in halves, like 3.5. */
   rating: number;
   /** Would I watch it again? */

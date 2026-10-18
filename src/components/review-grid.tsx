@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { formatScore } from "@/lib/text";
+import { verdictLabels, type Verdict } from "@/lib/types";
 
 /** Just what a poster card needs, so the page sends the browser as little as possible. */
 export type Card = {
@@ -11,8 +12,7 @@ export type Card = {
   title: string;
   year?: number;
   rating: number;
-  /** Rewatch verdict, already in words. */
-  verdict: string;
+  verdict: Verdict;
   poster?: { url: string; color?: string };
 };
 
@@ -24,6 +24,14 @@ const SORTS: Record<SortKey, { label: string; spoken: string; compare: (a: Card,
   high: { label: "Highest", spoken: "highest rating first", compare: (a, b) => b.rating - a.rating || byTitle(a, b) },
   low: { label: "Lowest", spoken: "lowest rating first", compare: (a, b) => a.rating - b.rating || byTitle(a, b) },
   title: { label: "A to Z", spoken: "title, A to Z", compare: byTitle },
+};
+
+// The badge gets warmer the more I'd rewatch it. All pairs pass WCAG AA.
+const BADGE: Record<Verdict, string> = {
+  forever: "bg-accent text-on-accent",
+  rewatch: "bg-[#f7d792] text-on-accent",
+  once: "bg-[#d6d8de] text-[#15171c]",
+  skip: "bg-surface text-muted ring-1 ring-line",
 };
 
 // Matches the grid columns below: 2 on phones up to 5 on wide screens.
@@ -76,9 +84,12 @@ function PosterCard({ card, eager }: { card: Card; eager: boolean }) {
 
   return (
     <li>
-      <Link href={`/${card.slug}`} className="group block rounded-xl">
+      <Link
+        href={`/${card.slug}`}
+        className="group block rounded-xl transition-transform duration-300 ease-out hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      >
         <div
-          className="relative aspect-[2/3] overflow-hidden rounded-xl bg-surface ring-1 ring-white/10"
+          className="relative aspect-[2/3] overflow-hidden rounded-xl bg-surface ring-1 ring-white/10 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-black/60"
           style={{ backgroundColor: card.poster?.color }}
         >
           {card.poster ? (
@@ -99,7 +110,7 @@ function PosterCard({ card, eager }: { card: Card; eager: boolean }) {
           )}
           <span
             aria-hidden="true"
-            className="absolute left-2 top-2 rounded-lg bg-accent px-2 py-1.5 text-base font-bold leading-none tabular-nums text-on-accent shadow-lg shadow-black/40"
+            className={`absolute left-2 top-2 rounded-lg px-2 py-1.5 text-base font-bold leading-none tabular-nums shadow-lg shadow-black/40 ${BADGE[card.verdict]}`}
           >
             {rating}
             <span className="text-[0.7em] font-semibold opacity-75">/5</span>
@@ -109,7 +120,7 @@ function PosterCard({ card, eager }: { card: Card; eager: boolean }) {
           {card.title}
         </h3>
         <p className="mt-1 text-sm text-muted">
-          {[card.year, card.verdict].filter(Boolean).join(" · ")}
+          {[card.year, verdictLabels[card.verdict]].filter(Boolean).join(" · ")}
           <span className="sr-only">, my rating {rating} out of 5</span>
         </p>
       </Link>
