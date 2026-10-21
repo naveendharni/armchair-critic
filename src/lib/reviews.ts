@@ -45,7 +45,7 @@ function validate(list: Entry[]): void {
 async function load(): Promise<Review[]> {
   validate(entries);
 
-  // One request per source, carrying every ID of that type.
+  // Each source fetches every ID of its type at once (AniList in a single request).
   const types = [...new Set(entries.map((entry) => entry.type))];
   const found = new Map<MediaType, Map<number, Media>>(
     await Promise.all(

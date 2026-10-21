@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.anilist.co", pathname: "/file/anilistcdn/**" },
+      { protocol: "https", hostname: "static.tvmaze.com", pathname: "/uploads/images/**" },
     ],
     formats: ["image/avif", "image/webp"],
     qualities: [75],
