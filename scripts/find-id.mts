@@ -1,6 +1,6 @@
 // Finds the source ID for a title, to copy into src/data/entries.ts.
 //   npm run find -- "attack on titan"
-//   npm run find -- --type anime "frieren"
+//   npm run find -- --type show "breaking bad"
 
 type Match = { id: number; title: string; details: string };
 
@@ -48,9 +48,26 @@ async function findAnime(search: string): Promise<Match[]> {
   });
 }
 
+type TVmazeSearch = {
+  show: { id: number; name: string; premiered: string | null; network: { name: string } | null; webChannel: { name: string } | null };
+}[];
+
+async function findShow(search: string): Promise<Match[]> {
+  const res = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(search)}`);
+  if (!res.ok) throw new Error(`TVmaze request failed with status ${res.status}`);
+  const results = (await res.json()) as TVmazeSearch;
+  return results.map(({ show }) => ({
+    id: show.id,
+    title: show.name,
+    details: [show.premiered?.slice(0, 4), show.network?.name ?? show.webChannel?.name].filter(Boolean).join(", "),
+  }));
+}
+
 // One search per type. Movies (TMDB), shows (TVmaze) and singers (Deezer) go here later.
 const finders: Record<string, (search: string) => Promise<Match[]>> = {
   anime: findAnime,
+  show: findShow,
+  webseries: findShow,
 };
 
 const args = process.argv.slice(2);
@@ -68,7 +85,7 @@ if (!search) {
 }
 const find = finders[type];
 if (!find) {
-  console.log(`Search for "${type}" is not built yet. Only anime works for now.`);
+  console.log(`Search for "${type}" is not built yet. Try anime, show or webseries.`);
   process.exit(1);
 }
 
