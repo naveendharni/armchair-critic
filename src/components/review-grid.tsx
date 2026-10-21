@@ -27,13 +27,13 @@ const SORTS: Record<SortKey, { label: string; spoken: string; compare: (a: Card,
   title: { label: "A to Z", spoken: "title, A to Z", compare: byTitle },
 };
 
-// The badge gets warmer the more I'd rewatch it. All pairs pass WCAG AA.
-const BADGE: Record<Verdict, string> = {
-  forever: "bg-accent text-on-accent",
-  rewatch: "bg-[#f7d792] text-on-accent",
-  once: "bg-[#d6d8de] text-[#15171c]",
-  skip: "bg-surface text-muted ring-1 ring-line",
-};
+// Medal colors by rating: gold for 5, silver from 4, bronze from 3. All pass WCAG AA.
+function badgeClass(rating: number): string {
+  if (rating >= 5) return "bg-linear-to-br from-[#fbd476] to-[#e9a82a] text-[#1c1404]";
+  if (rating >= 4) return "bg-linear-to-br from-[#f4f5f7] to-[#b9bec8] text-[#15171c]";
+  if (rating >= 3) return "bg-linear-to-br from-[#e8b08a] to-[#b8774a] text-[#1f1206]";
+  return "bg-surface text-muted ring-1 ring-line";
+}
 
 // Matches the grid columns below: 2 on phones up to 5 on wide screens.
 const SIZES = "(min-width: 1152px) 210px, (min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw";
@@ -138,7 +138,7 @@ function PosterCard({ card, eager }: { card: Card; eager: boolean }) {
           )}
           <span
             aria-hidden="true"
-            className={`absolute left-2 top-2 rounded-lg px-2 py-1.5 text-base font-bold leading-none tabular-nums shadow-lg shadow-black/40 ${BADGE[card.verdict]}`}
+            className={`absolute left-2 top-2 rounded-lg px-2 py-1.5 text-base font-bold leading-none tabular-nums shadow-lg shadow-black/40 ${badgeClass(card.rating)}`}
           >
             {rating}
             <span className="text-[0.7em] font-semibold opacity-75">/5</span>
