@@ -95,4 +95,77 @@ export const entries: Entry[] = [
     ],
     note: "One of the few long series that sticks the landing.",
   },
+
+  {
+    type: "show",
+    id: 169, // Breaking Bad
+    rating: 5,
+    verdict: "forever",
+    strong: [
+      "Walter White's slow turn from teacher to villain is gripping to watch.",
+      "Every season raises the stakes, and the ending lands.",
+      "Bryan Cranston and Aaron Paul are outstanding together.",
+    ],
+    weak: ["The first season starts slow.", "Skyler's side of the story can drag in the middle seasons."],
+    note: "As close to a perfect drama as TV gets.",
+  },
+  {
+    type: "show",
+    id: 82, // Game of Thrones
+    rating: 4,
+    verdict: "once",
+    strong: [
+      "The first four seasons are some of the best TV ever made.",
+      "A huge world full of characters you love to hate.",
+      "Big battle episodes feel like films.",
+    ],
+    weak: [
+      "The last two seasons rush through the story.",
+      "The ending lets down years of build up.",
+      "Some later episodes are too dark to see clearly.",
+    ],
+    note: "Great for years, then it fell apart at the finish.",
+  },
+  {
+    type: "show",
+    id: 30770, // Chernobyl
+    rating: 5,
+    verdict: "rewatch",
+    strong: [
+      "It makes a true disaster feel tense, scary and personal.",
+      "The sound and look of the Soviet era are spot on.",
+      "Short and tight, with no wasted episodes.",
+    ],
+    weak: ["Hard to watch, and not something to put on casually.", "Some events are changed or merged for drama."],
+    note: "Five episodes that stay with you.",
+  },
+  {
+    type: "show",
+    id: 73, // The Walking Dead
+    rating: 3,
+    verdict: "once",
+    strong: [
+      "The first seasons are tense and full of real danger.",
+      "Strong villains, especially in the middle seasons.",
+    ],
+    weak: [
+      "It runs far too long, with slow filler stretches.",
+      "Later seasons repeat the same story with new faces.",
+      "Big character exits often feel like shock for its own sake.",
+    ],
+    note: "Watch the early seasons and stop when it starts to drag.",
+  },
+  {
+    type: "show",
+    id: 526, // The Office (US)
+    rating: 4.5,
+    verdict: "forever",
+    strong: [
+      "Michael Scott is one of the great comedy characters.",
+      "Jim and Pam's story gives the show real heart.",
+      "Easy to put on any time, and it still makes me laugh.",
+    ],
+    weak: ["Season 1 is rough while it finds its tone.", "The last seasons after Michael leaves are weaker."],
+    note: "The ultimate comfort show.",
+  },
 ];
