@@ -61,12 +61,18 @@ function buildQuery(pageCount: number): string {
 async function post(body: string, attempt = 1): Promise<AniListResponse> {
   const res = await fetch(ENDPOINT, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      // AniList sits behind Cloudflare, which can block anonymous server requests.
+      "User-Agent": "ArmchairCritic/1.0 (+https://armchair-critic.vercel.app)",
+    },
     body,
     signal: AbortSignal.timeout(20_000),
   });
-  if (res.status === 429 && attempt < 3) {
-    const wait = Math.min(Number(res.headers.get("retry-after")) || 10, 60);
+  // 429 is AniList's rate limit; 403 has come from Cloudflare blocking a build server for a moment.
+  if ((res.status === 429 || res.status === 403) && attempt < 3) {
+    const wait = res.status === 429 ? Math.min(Number(res.headers.get("retry-after")) || 10, 60) : 5 * attempt;
     await new Promise((resolve) => setTimeout(resolve, wait * 1000));
     return post(body, attempt + 1);
   }
