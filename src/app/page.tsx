@@ -22,9 +22,8 @@ export default async function Home() {
     slug: review.slug,
     type: review.type,
     title: review.media.title,
-    year: review.media.year,
+    genres: review.media.genres.slice(0, 3),
     rating: review.rating,
-    verdict: review.verdict,
     poster: review.media.poster,
   }));
 

@@ -4,16 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { formatScore } from "@/lib/text";
-import { verdictLabels, type MediaType, type Verdict } from "@/lib/types";
+import type { MediaType } from "@/lib/types";
 
 /** Just what a poster card needs, so the page sends the browser as little as possible. */
 export type Card = {
   slug: string;
   type: MediaType;
   title: string;
-  year?: number;
+  /** First two genres, shown under the title. */
+  genres: string[];
   rating: number;
-  verdict: Verdict;
   poster?: { url: string; color?: string };
 };
 
@@ -148,7 +148,7 @@ function PosterCard({ card, eager }: { card: Card; eager: boolean }) {
           {card.title}
         </h3>
         <p className="mt-1 text-sm text-muted">
-          {[card.year, verdictLabels[card.verdict]].filter(Boolean).join(" · ")}
+          {card.genres.join(" · ")}
           <span className="sr-only">, my rating {rating} out of 5</span>
         </p>
       </Link>
