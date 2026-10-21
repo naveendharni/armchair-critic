@@ -1,4 +1,4 @@
-import { ReviewGrid, type Card } from "@/components/review-grid";
+import { ReviewGrid, type Card, type TypeFilter } from "@/components/review-grid";
 import { getReviews } from "@/lib/reviews";
 import { typeLabels, type MediaType, type Review } from "@/lib/types";
 
@@ -10,10 +10,17 @@ function summarize(reviews: Review[]): string {
   return `${parts.join(", ")} rated`;
 }
 
+/** A filter chip for each type in the list, in the order they first appear. */
+function typeFilters(reviews: Review[]): TypeFilter[] {
+  const types = [...new Set(reviews.map((review) => review.type))];
+  return types.map((type) => ({ type, label: typeLabels[type].many.replace(/^./, (c) => c.toUpperCase()) }));
+}
+
 export default async function Home() {
   const reviews = await getReviews();
   const cards: Card[] = reviews.map((review) => ({
     slug: review.slug,
+    type: review.type,
     title: review.media.title,
     year: review.media.year,
     rating: review.rating,
@@ -29,7 +36,7 @@ export default async function Home() {
           My ratings out of 5, with what worked and what didn&apos;t.
         </p>
       </div>
-      <ReviewGrid cards={cards} summary={summarize(reviews)} />
+      <ReviewGrid cards={cards} summary={summarize(reviews)} types={typeFilters(reviews)} />
     </>
   );
 }

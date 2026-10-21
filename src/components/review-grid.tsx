@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { formatScore } from "@/lib/text";
-import { verdictLabels, type Verdict } from "@/lib/types";
+import { verdictLabels, type MediaType, type Verdict } from "@/lib/types";
 
 /** Just what a poster card needs, so the page sends the browser as little as possible. */
 export type Card = {
   slug: string;
+  type: MediaType;
   title: string;
   year?: number;
   rating: number;
@@ -37,10 +38,18 @@ const BADGE: Record<Verdict, string> = {
 // Matches the grid columns below: 2 on phones up to 5 on wide screens.
 const SIZES = "(min-width: 1152px) 210px, (min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw";
 
-export function ReviewGrid({ cards, summary }: { cards: Card[]; summary: string }) {
+/** One filter chip per type in the list, like { type: "show", label: "TV shows" }. */
+export type TypeFilter = { type: MediaType; label: string };
+
+export function ReviewGrid({ cards, summary, types }: { cards: Card[]; summary: string; types: TypeFilter[] }) {
   const [sort, setSort] = useState<SortKey>("high");
+  const [type, setType] = useState<MediaType | "all">("all");
   const [announcement, setAnnouncement] = useState("");
-  const sorted = useMemo(() => [...cards].sort(SORTS[sort].compare), [cards, sort]);
+  const sorted = useMemo(
+    () => cards.filter((card) => type === "all" || card.type === type).sort(SORTS[sort].compare),
+    [cards, sort, type],
+  );
+  const filters = [{ type: "all" as const, label: "All" }, ...types];
 
   return (
     <section aria-labelledby="list-heading">
@@ -65,6 +74,25 @@ export function ReviewGrid({ cards, summary }: { cards: Card[]; summary: string 
           ))}
         </div>
       </div>
+
+      {types.length > 1 && (
+        <div role="group" aria-label="Show" className="mt-4 flex flex-wrap gap-2">
+          {filters.map((filter) => (
+            <button
+              key={filter.type}
+              type="button"
+              aria-pressed={type === filter.type}
+              onClick={() => {
+                setType(filter.type);
+                setAnnouncement(`Showing ${filter.type === "all" ? "everything" : filter.label}`);
+              }}
+              className="h-9 rounded-full px-4 text-sm font-medium text-muted ring-1 ring-line transition-colors aria-[pressed=false]:hover:text-fg aria-pressed:bg-fg aria-pressed:text-bg aria-pressed:ring-fg"
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <p aria-live="polite" className="sr-only">
         {announcement}

@@ -18,7 +18,7 @@ const serif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: { default: "Armchair Critic", template: "%s | Armchair Critic" },
-  description: "Anime I've watched, rated out of 5, with what worked and what didn't.",
+  description: "Anime and TV shows I've watched, rated out of 5, with what worked and what didn't.",
 };
 
 export const viewport: Viewport = {
@@ -60,6 +60,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Posters and details from{" "}
           <a href="https://anilist.co" className="underline underline-offset-4 hover:text-fg">
             AniList
+          </a>{" "}
+          and{" "}
+          <a href="https://www.tvmaze.com" className="underline underline-offset-4 hover:text-fg">
+            TVmaze
           </a>
           .
         </footer>
